@@ -1,0 +1,78 @@
+{
+  "kind": "collectionType",
+  "collectionName": "posts",
+  "info": {
+    "singularName": "post",
+    "pluralName": "posts",
+    "displayName": "Post"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
+    },
+    "totalTime": {
+      "type": "biginteger"
+    },
+    "servings": {
+      "type": "biginteger"
+    },
+    "difficulty": {
+      "type": "enumeration",
+      "enum": [
+        "select an option",
+        "easy",
+        "medium",
+        "hard"
+      ]
+    },
+    "dateAdded": {
+      "type": "datetime"
+    },
+    "category": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::category.category"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "amountLikes": {
+      "type": "biginteger"
+    },
+    "comments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::comment.comment",
+      "mappedBy": "post"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "description": {
+      "type": "text"
+    },
+    "ingredients": {
+      "type": "text"
+    },
+    "steps": {
+      "type": "text"
+    }
+  }
+}
