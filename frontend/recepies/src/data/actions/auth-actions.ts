@@ -2,7 +2,7 @@
 import { z } from "zod";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import bcrypt from "bcryptjs"; // ✅ bcrypt importeren
+import bcrypt from "bcryptjs"; 
 
 import {
   registerUserService,
@@ -10,7 +10,7 @@ import {
 } from "@/data/services/auth-service";
 
 const config = {
-  maxAge: 60 * 60 * 24 * 7, // 1 week
+  maxAge: 60 * 60 * 24 * 7, 
   path: "/",
   domain: process.env.HOST ?? "localhost",
   httpOnly: true,
@@ -71,7 +71,7 @@ export async function registerUserAction(prevState: any, formData: FormData) {
   const cookieStore = await cookies();
   cookieStore.set("jwt", responseData.jwt, config);
 
-  // ✅ geef user info mee in redirect
+  
   redirect(`/posts?userId=${responseData.user.id}&username=${responseData.user.username}`);
 }
 
@@ -133,7 +133,7 @@ export async function loginUserAction(prevState: any, formData: FormData) {
   const cookieStore = await cookies();
   cookieStore.set("jwt", responseData.jwt, config);
 
-  // ✅ geef user info mee in redirect
+  
   redirect(`/posts?userId=${responseData.user.documentId}&username=${responseData.user.username}`);
 }
 

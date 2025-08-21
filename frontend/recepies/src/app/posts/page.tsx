@@ -74,7 +74,19 @@ export default async function PostsPage({ searchParams }: Props) {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Posts</h1>
+       <div className="flex justify-between items-center mb-4">
+      <h1 className="text-3xl font-bold">Posts</h1>
+
+      
+      {jwt && (
+        <Link
+          href="/posts/create"
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Create Recipe
+        </Link>
+      )}
+    </div>
       <SearchSortForm initialSearch={search} initialSort={sort} initialCategory={category} />
       <PostsListClient posts={posts} />
     </div>

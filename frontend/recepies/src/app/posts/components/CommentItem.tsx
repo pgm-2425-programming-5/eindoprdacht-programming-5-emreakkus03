@@ -33,15 +33,15 @@ export default function CommentItem({
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // 👈 extra state
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
 
   useEffect(() => {
     getCurrentUser().then((user) => {
       if (user) {
         setCurrentUserDocumentId(user.documentId);
-        setIsLoggedIn(true); // 👈 ingelogd
+        setIsLoggedIn(true);
       } else {
-        setIsLoggedIn(false); // 👈 niet ingelogd
+        setIsLoggedIn(false);
       }
     });
   }, []);
@@ -91,7 +91,7 @@ export default function CommentItem({
                 disabled={isSaving}
                 className="px-3 py-1 bg-green-500 text-white rounded"
               >
-                {isSaving ? 'Opslaan...' : 'Opslaan'}
+                {isSaving ? 'Saving...' : 'Save'}
               </button>
               <button
                 onClick={() => {
@@ -100,7 +100,7 @@ export default function CommentItem({
                 }}
                 className="px-3 py-1 bg-gray-300 rounded"
               >
-                Annuleren
+                Cancel
               </button>
             </div>
           </div>
@@ -109,17 +109,17 @@ export default function CommentItem({
         )}
 
         <div className="flex gap-2 mt-2">
-          {/* Reageren alleen tonen als ingelogd */}
+         
           {isLoggedIn && (
             <button
               className="text-sm text-purple-500 hover:underline"
               onClick={() => setIsReplying(!isReplying)}
             >
-              {isReplying ? 'Annuleer' : 'Reageer'}
+              {isReplying ? 'Cancel' : 'Reply'}
             </button>
           )}
 
-          {/* Edit/Delete alleen tonen als ingelogd én eigenaar */}
+          
           {isLoggedIn && currentUserDocumentId === comment.users_permissions_user?.documentId && (
             <>
               <button
@@ -139,7 +139,7 @@ export default function CommentItem({
           )}
         </div>
 
-        {/* Reply form alleen als ingelogd */}
+        
         {isLoggedIn && isReplying && !isEditing && (
           <CommentForm
             documentId={documentId}

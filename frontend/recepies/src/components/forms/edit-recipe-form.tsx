@@ -37,7 +37,7 @@ export function EditRecipeForm({ post, onClose }: { post: Post; onClose?: () => 
         const result = await getCategories();
         setCategories(result);
       } catch (err) {
-        console.error('Fout bij ophalen categorieën:', err);
+        console.error('Error fetching categories:', err);
       } finally {
         setLoading(false);
       }
@@ -50,33 +50,31 @@ export function EditRecipeForm({ post, onClose }: { post: Post; onClose?: () => 
   return (
     <Card className="max-w-xl mx-auto">
       <CardHeader>
-        <CardTitle>Recept bewerken</CardTitle>
+        <CardTitle>Recipe Editing</CardTitle>
       </CardHeader>
       <CardContent>
         <form action={formAction} encType="multipart/form-data">
-          <Input name="title" defaultValue={post.title} placeholder="Titel" className="mb-4" />
+          <Input name="title" defaultValue={post.title} placeholder="Title" className="mb-4" />
           <textarea
             name="description"
             defaultValue={post.description}
-            placeholder="Beschrijving"
-            
+            placeholder="Description"
             className="mb-4"
           />
           <textarea
             name="ingredients"
             defaultValue={post.ingredients}
-            placeholder="Ingrediënten"
+            placeholder="Ingredients"
             className="mb-4"
           />
           <textarea
             name="steps"
             defaultValue={post.steps}
-            placeholder="Bereidingsstappen"
+            placeholder="Preparation Steps"
             className="mb-4"
           />
-         
 
-          <label className="block mb-1 font-medium">Afbeelding</label>
+          <label className="block mb-1 font-medium">Image</label>
           <input
             type="file"
             name="image"
@@ -84,27 +82,27 @@ export function EditRecipeForm({ post, onClose }: { post: Post; onClose?: () => 
             className="mb-4 w-full border p-2 rounded"
           />
 
-          <label className="block mb-1 font-medium">Moeilijkheidsgraad</label>
+          <label className="block mb-1 font-medium">Difficulty</label>
           <select
             name="difficulty"
             defaultValue={post.difficulty}
             
             className="mb-4 w-full border p-2 rounded"
           >
-            <option value="">Selecteer moeilijkheid</option>
-            <option value="easy">Makkelijk</option>
-            <option value="medium">Gemiddeld</option>
-            <option value="hard">Moeilijk</option>
+            <option value="">Select difficulty</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
           </select>
 
-          <label className="block mb-1 font-medium">Categorie</label>
+          <label className="block mb-1 font-medium">Category</label>
           <select
             name="category"
             defaultValue={post.category?.documentId}
             
             className="mb-4 w-full border p-2 rounded"
           >
-            <option value="">Selecteer categorie</option>
+            <option value="">Select category</option>
             {categories.map((cat) => (
               <option key={cat.documentId} value={cat.documentId}>
                 {cat.title}
@@ -112,7 +110,7 @@ export function EditRecipeForm({ post, onClose }: { post: Post; onClose?: () => 
             ))}
           </select>
 
-          <label className="block mb-1 font-medium">Totale minuten</label>
+          <label className="block mb-1 font-medium">Total Minutes</label>
           <select
             name="totalTime"
             defaultValue={post.totalTime}
@@ -121,12 +119,12 @@ export function EditRecipeForm({ post, onClose }: { post: Post; onClose?: () => 
           >
             {[...Array(61).keys()].slice(1).map((min) => (
               <option key={min} value={min}>
-                {min} minuten
+                {min} minutes
               </option>
             ))}
           </select>
 
-          <label className="block mb-1 font-medium">Aantal personen</label>
+          <label className="block mb-1 font-medium">Servings</label>
           <select
             name="servings"
             defaultValue={post.servings}
@@ -135,7 +133,7 @@ export function EditRecipeForm({ post, onClose }: { post: Post; onClose?: () => 
           >
             {[...Array(21).keys()].slice(1).map((n) => (
               <option key={n} value={n}>
-                {n} personen
+                {n} servings
               </option>
             ))}
           </select>
@@ -146,9 +144,9 @@ export function EditRecipeForm({ post, onClose }: { post: Post; onClose?: () => 
               onClick={onClose}
               className="bg-gray-300 px-4 py-2 rounded"
             >
-              Annuleren
+              Cancel
             </button>
-            <SubmitButton text="Wijzigingen opslaan" loadingText="Bezig met opslaan..." />
+            <SubmitButton text="Save Changes" loadingText="Saving..." />
           </div>
 
          

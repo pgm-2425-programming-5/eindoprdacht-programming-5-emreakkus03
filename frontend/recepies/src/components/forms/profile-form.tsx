@@ -27,7 +27,7 @@ export function ProfileForm({
   const router = useRouter();
 
   React.useEffect(() => {
-    if (state?.message === 'Profiel succesvol gewijzigd') {
+    if (state?.message === 'Profile updated successfully') {
       router.refresh();
     }
   }, [state?.message, router]);
@@ -35,14 +35,14 @@ export function ProfileForm({
   return (
     <Card className={className}>
       <CardHeader>
-        <CardTitle>Wijzig profielgegevens</CardTitle>
+        <CardTitle>Update Profile Information</CardTitle>
       </CardHeader>
       <CardContent>
         <form action={formAction}>
           <Input
             id="username"
             name="username"
-            placeholder="Nieuwe gebruikersnaam"
+            placeholder="New username"
             required
             className="mb-4"
             defaultValue={user.username}
@@ -51,7 +51,7 @@ export function ProfileForm({
             type="email"
             id="email"
             name="email"
-            placeholder="Nieuw e-mailadres"
+            placeholder="New email address"
             required
             className="mb-4"
             defaultValue={user.email}
@@ -60,7 +60,7 @@ export function ProfileForm({
             type="password"
             id="password"
             name="password"
-            placeholder="Nieuw wachtwoord (optioneel)"
+            placeholder="New password (optional)"
             className="mb-4"
             autoComplete="new-password"
           />
@@ -68,12 +68,12 @@ export function ProfileForm({
             type="password"
             id="passwordConfirm"
             name="passwordConfirm"
-            placeholder="Bevestig nieuw wachtwoord"
+            placeholder="Confirm new password"
             className="mb-4"
             autoComplete="new-password"
           />
           <input type="hidden" name="id" value={user.id} />
-          <SubmitButton text="Wijzig" loadingText="Bezig met wijzigen..." />
+          <SubmitButton text="Update" loadingText="Updating..." />
           {state?.message && (
             <p className="mt-2 text-sm text-gray-600">{state.message}</p>
           )}

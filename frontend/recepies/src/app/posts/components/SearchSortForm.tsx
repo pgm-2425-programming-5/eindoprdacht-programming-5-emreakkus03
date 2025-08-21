@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { getCategories } from "@/lib/queries";
 
@@ -72,7 +72,7 @@ export default function SearchSortForm({ initialSearch, initialSort, initialCate
         className="border px-3 py-2 rounded"
         onChange={handleCategoryChange}
       >
-        <option value="">Alle categorieën</option>
+        <option value="">All categories</option>
         {categories.map(cat => (
           <option key={cat.documentId} value={cat.documentId}>{cat.title}</option>
         ))}
@@ -82,7 +82,7 @@ export default function SearchSortForm({ initialSearch, initialSort, initialCate
         type="submit"
         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
       >
-        Zoek
+        Search
       </button>
     </form>
   );

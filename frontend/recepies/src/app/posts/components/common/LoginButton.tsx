@@ -4,7 +4,7 @@ import React from 'react';
 
 export default function LoginButton (){
     const handleClick = () => {
-        window.location.href = "/login";
+        window.location.href = "/signin";
     };
 
     return (

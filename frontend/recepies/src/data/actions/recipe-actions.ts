@@ -2,6 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { getCurrentUser } from './comment-actions';
+import { redirect } from "next/navigation";
 
 export async function createRecipeAction(_: any, formData: FormData) {
   const title = formData.get('title') as string;
@@ -16,16 +17,16 @@ export async function createRecipeAction(_: any, formData: FormData) {
   const slug = title.toLowerCase().replace(/\s+/g, '-');
 
   const jwt = (await cookies()).get('jwt')?.value;
-  if (!jwt) return { message: 'Niet ingelogd' };
+  if (!jwt) return { message: 'Not logged in' };
 
-  // Haal de ingelogde gebruiker op
+  
   const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me`, {
     headers: { Authorization: `Bearer ${jwt}` },
   });
-  if (!userRes.ok) return { message: 'Kon gebruiker niet ophalen' };
+  if (!userRes.ok) return { message: 'Could not retrieve user' };
   const user = await userRes.json();
 
-  // 1) Maak het recept aan zonder afbeelding
+  
   const postRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts`, {
     method: 'POST',
     headers: {
@@ -50,23 +51,23 @@ export async function createRecipeAction(_: any, formData: FormData) {
   });
 
   if (!postRes.ok) {
-    console.error('Fout bij aanmaken recept:', await postRes.text());
-    return { message: 'Fout bij opslaan van recept' };
+    console.error('Error creating recipe:', await postRes.text());
+    return { message: 'Error saving recipe' };
   }
 
   const post = await postRes.json();
   const recipeId = post.data.id;
 
-  // 2) Controleer en upload afbeelding + koppel aan recept
+  
   if (!imageFile || !(imageFile instanceof Blob) || imageFile.size === 0) {
-    return { message: 'Geen afbeelding geselecteerd of ongeldig bestand' };
+    return { message: 'No image selected or invalid file' };
   }
 
   const imageForm = new FormData();
   imageForm.append('files', imageFile, imageFile.name);
-  imageForm.append('ref', 'api::post.post'); // pas aan als jouw content-type een andere UID heeft
+  imageForm.append('ref', 'api::post.post'); 
   imageForm.append('refId', recipeId.toString());
-  imageForm.append('field', 'image'); // veldnaam in jouw content-type
+  imageForm.append('field', 'image');
 
   const uploadResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/upload`, {
     method: 'POST',
@@ -74,39 +75,37 @@ export async function createRecipeAction(_: any, formData: FormData) {
     body: imageForm,
   });
 
-  if (!uploadResponse.ok) {
-    console.error('Fout bij uploaden afbeelding:', await uploadResponse.text());
-    return { message: 'Fout bij uploaden van afbeelding' };
-  }
+  
 
-  return { message: 'Recept succesvol aangemaakt' };
+  redirect('/posts');
+  return { message: 'Recipe successfully created' };
 }
 
 export async function deletePostAction(postDocumentId: string) {
-  console.log("➡️ deletePostAction gestart met documentId:", postDocumentId);
+  console.log("➡️ deletePostAction started with documentId:", postDocumentId);
 
   const jwt = (await cookies()).get('jwt')?.value;
-  if (!jwt) return { message: 'Niet ingelogd' };
+  if (!jwt) return { message: 'Not logged in' };
 
   const currentUser = await getCurrentUser();
-  if (!currentUser) return { message: 'Kon gebruiker niet ophalen' };
+  if (!currentUser) return { message: 'Could not retrieve user' };
 
-  // 🔍 Post ophalen om eigenaar te checken
+  
   const postRes = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/posts?filters[documentId][$eq]=${postDocumentId}&populate=user`,
     { headers: { Authorization: `Bearer ${jwt}` } }
   );
-  if (!postRes.ok) return { message: 'Fout bij ophalen van post' };
+  if (!postRes.ok) return { message: 'Error fetching post' };
 
   const data = await postRes.json();
   const post = data.data?.[0];
-  if (!post) return { message: 'Post niet gevonden' };
+  if (!post) return { message: 'Post not found' };
 
   if (post.user?.documentId !== currentUser.documentId) {
-    return { message: 'Geen toestemming om deze post te verwijderen' };
+    return { message: 'No permission to delete this post' };
   }
 
-  // 🗑 Post verwijderen
+  
   const delRes = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${postDocumentId}`,
     {
@@ -120,12 +119,12 @@ export async function deletePostAction(postDocumentId: string) {
 
   if (!delRes.ok) {
     const errText = await delRes.text();
-    console.error('❌ DELETE mislukt:', errText);
-    return { message: 'Fout bij verwijderen van post' };
+    console.error('❌ DELETE failed:', errText);
+    return { message: 'Error deleting post' };
   }
 
-  console.log("✅ Post succesvol verwijderd");
-  return { message: 'Post succesvol verwijderd' };
+  console.log("✅ Post successfully deleted");
+  return { message: 'Post successfully deleted' };
 }
 
 export async function editPostAction(
@@ -141,30 +140,30 @@ export async function editPostAction(
     category?: string;
   }
 ) {
-  console.log("✏️ editPostAction gestart met documentId:", postDocumentId);
+  console.log("✏️ editPostAction started with documentId:", postDocumentId);
 
   const jwt = (await cookies()).get('jwt')?.value;
-  if (!jwt) return { message: 'Niet ingelogd' };
+  if (!jwt) return { message: 'Not logged in' };
 
   const currentUser = await getCurrentUser();
-  if (!currentUser) return { message: 'Kon gebruiker niet ophalen' };
+  if (!currentUser) return { message: 'Could not retrieve user' };
 
-  // 🔍 Post ophalen om eigenaar te checken
+  
   const postRes = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/posts?filters[documentId][$eq]=${postDocumentId}&populate=user`,
     { headers: { Authorization: `Bearer ${jwt}` } }
   );
-  if (!postRes.ok) return { message: 'Fout bij ophalen van post' };
+  if (!postRes.ok) return { message: 'Error while fetching post' };
 
   const data = await postRes.json();
   const post = data.data?.[0];
-  if (!post) return { message: 'Post niet gevonden' };
+  if (!post) return { message: 'Post not found' };
 
   if (post.user?.documentId !== currentUser.documentId) {
-    return { message: 'Geen toestemming om deze post te bewerken' };
+    return { message: 'No permission to edit this post' };
   }
 
-  // ✏️ PATCH uitvoeren
+  
   const putRes = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${postDocumentId}`,
     {
@@ -179,11 +178,11 @@ export async function editPostAction(
 
   if (!putRes.ok) {
     const errText = await putRes.text();
-    console.error("❌ PATCH mislukt:", errText);
-    return { message: 'Fout bij bewerken van post' };
+    console.error("❌ PATCH failed:", errText);
+    return { message: 'Error while editing post' };
   }
 
   const updated = await putRes.json();
-  console.log("✅ Post succesvol bewerkt:", updated);
-  return { message: 'Post succesvol bewerkt', post: updated };
+  console.log("✅ Post successfully edited:", updated);
+  return { message: 'Post successfully edited', post: updated };
 }

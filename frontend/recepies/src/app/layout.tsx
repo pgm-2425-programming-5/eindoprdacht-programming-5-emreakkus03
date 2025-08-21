@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import LoginButton from "./posts/components/common/LoginButton";
-import ClientUserStore from "./posts/components/ClientUserStore";
 
-import { LogoutButton } from "@/components/custom/logout-button";
+import ClientUserStore from "./posts/components/ClientUserStore";
+import { AuthProvider } from "@/components/custom/contexts/AuthContext";
+
+import {Navbar} from "@/components/custom/nav-bar";
 import { getServerSession } from "next-auth";
 
 
@@ -21,9 +22,13 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        <LogoutButton />
+        <AuthProvider>
+        <Navbar />
+        
         <ClientUserStore />
-        {children}
+
+          {children}
+        </AuthProvider>
         
       </body>
     </html>

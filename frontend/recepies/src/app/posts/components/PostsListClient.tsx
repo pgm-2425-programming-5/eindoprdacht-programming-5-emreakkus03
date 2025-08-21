@@ -2,18 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import PostsItem from './PostsItem';
+import PostItem from './PostsItem';
 import { Post } from '@/types/Post';
 import { deletePostAction } from '@/data/actions/recipe-actions';
 import { EditRecipeForm } from '@/components/forms/edit-recipe-form';
-import { getCurrentUser } from '@/data/actions/comment-actions'; // of waar je helper staat
+import { getCurrentUser } from '@/data/actions/comment-actions';
 
 export default function PostsListClient({ posts }: { posts: Post[] }) {
   const router = useRouter();
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
-  // Ophalen ingelogde user (client-side)
+  
   useEffect(() => {
     getCurrentUser().then((user) => {
       if (user) setCurrentUserId(user.documentId);
@@ -39,33 +39,39 @@ export default function PostsListClient({ posts }: { posts: Post[] }) {
         <EditRecipeForm post={editingPost} onClose={handleCloseForm} />
       )}
 
-      {posts.map((post) => {
-        // check: is deze user ingelogd én eigenaar?
-        const isOwner = currentUserId && post.user?.documentId === currentUserId;
+      
+      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {posts.map((post) => {
+          const isOwner =
+            currentUserId && post.user?.documentId === currentUserId;
 
-        return (
-          <div key={post.documentId} className="border p-3 rounded mb-4">
-            <PostsItem post={post} />
+          return (
+            <li
+              key={post.documentId}
+              className="bg-gray-100 border rounded-lg shadow-md overflow-hidden"
+            >
+              <PostItem post={post} />
 
-            {isOwner && (
-              <div className="flex gap-2 mt-2">
-                <button
-                  onClick={() => handleEditPost(post)}
-                  className="px-3 py-1 bg-blue-500 text-white rounded"
-                >
-                  Bewerken
-                </button>
-                <button
-                  onClick={() => handleDeletePost(post.documentId)}
-                  className="px-3 py-1 bg-red-500 text-white rounded"
-                >
-                  Verwijderen
-                </button>
-              </div>
-            )}
-          </div>
-        );
-      })}
+              {isOwner && (
+                <div className="flex justify-center gap-2 p-3 border-t">
+                  <button
+                    onClick={() => handleEditPost(post)}
+                    className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeletePost(post.documentId)}
+                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
     </>
   );
 }

@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { gql } from "graphql-request";
 
 
-// Helper functie om JWT op te halen uit cookies
+
 async function getJwt() {
   return (await cookies()).get('jwt')?.value || null;
 }
@@ -24,7 +24,7 @@ export async function requestGraphQL(query: string, variables: any, jwt?: string
 }
 
 
-// Haal de ingelogde gebruiker op via JWT cookie
+
 export async function getCurrentUser() {
   const jwt = (await cookies()).get('jwt')?.value;
   if (!jwt) return null;
@@ -37,19 +37,19 @@ export async function getCurrentUser() {
   return await userRes.json();
 }
 
-// Comment aanmaken en koppelen aan post en eventueel parent comment
+
 export async function createCommentAction(_: any, formData: FormData) {
   const message = formData.get('message') as string;
   const documentId = formData.get('documentId') as string;
   const parentCommentId = formData.get('parentCommentId') as string | null;
 
   const jwt = (await cookies()).get('jwt')?.value;
-  if (!jwt) return { message: 'Niet ingelogd' };
+  if (!jwt) return { message: 'Not logged in' };
 
   const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me`, {
     headers: { Authorization: `Bearer ${jwt}` },
   });
-  if (!userRes.ok) return { message: 'Kon gebruiker niet ophalen' };
+  if (!userRes.ok) return { message: 'Could not retrieve user' };
   const user = await userRes.json();
 
   const postRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts?filters[documentId][$eq]=${documentId}`, {
@@ -57,7 +57,7 @@ export async function createCommentAction(_: any, formData: FormData) {
   });
   const postData = await postRes.json();
   const post = postData.data?.[0];
-  if (!post) return { message: 'Post niet gevonden' };
+  if (!post) return { message: 'Post not found' };
 
   const commentRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments`, {
     method: 'POST',
@@ -79,26 +79,26 @@ export async function createCommentAction(_: any, formData: FormData) {
   const createdComment = await commentRes.json();
 
   if (!commentRes.ok) {
-    console.error('Fout bij aanmaken comment:', createdComment);
-    return { message: 'Fout bij opslaan van reactie' };
+    console.error('Error creating comment:', createdComment);
+    return { message: 'Error saving comment' };
   }
 
-  console.log('✔️ Gemaakte comment inclusief post-link:', createdComment);
+  console.log('✔️ Created comment with post link:', createdComment);
 
-  return { message: 'Comment succesvol geplaatst en gekoppeld aan post' };
+  return { message: 'Comment successfully posted and linked to post' };
 }
 
 export async function deleteCommentAction(commentDocumentId: string) {
-  console.log("➡️ deleteCommentAction gestart met documentId:", commentDocumentId);
+  console.log("➡️ deleteCommentAction started with documentId:", commentDocumentId);
 
   const jwt = (await cookies()).get('jwt')?.value;
-  if (!jwt) return { message: 'Niet ingelogd' };
+  if (!jwt) return { message: 'Not logged in' };
 
   const currentUser = await getCurrentUser();
-  console.log("👤 Huidige gebruiker:", currentUser);
-  if (!currentUser) return { message: 'Kon gebruiker niet ophalen' };
+  console.log("👤 Current user:", currentUser);
+  if (!currentUser) return { message: 'Could not retrieve user' };
 
-  // ✅ Werkende GraphQL query
+  
   const query = `
     query GetComment($docId: ID!) {
       comments(filters: { documentId: { eq: $docId } }) {
@@ -113,19 +113,19 @@ export async function deleteCommentAction(commentDocumentId: string) {
   `;
 
   const variables = { docId: commentDocumentId };
-  console.log("📦 Variabelen voor GraphQL:", variables);
+  console.log("📦 Variables for GraphQL:", variables);
 
   const data = await requestGraphQL(query, variables, jwt);
   console.log("📥 GraphQL response:", data);
 
   const comment = data?.comments?.[0];
   if (!comment) {
-    return { message: 'Comment niet gevonden' };
+    return { message: 'Comment not found' };
   }
 
-  // 🔒 Check eigenaar
+  
   if (comment.users_permissions_user?.documentId !== currentUser.documentId) {
-    return { message: 'Geen toestemming om deze reactie te verwijderen' };
+    return { message: 'No permission to delete this comment' };
   }
 
   // 🗑 Delete uitvoeren
@@ -142,28 +142,28 @@ export async function deleteCommentAction(commentDocumentId: string) {
 
   if (!res.ok) {
     const errText = await res.text();
-    console.error("❌ DELETE mislukt:", errText);
-    return { message: 'Fout bij verwijderen van reactie' };
+    console.error("❌ DELETE failed:", errText);
+    return { message: 'Error deleting comment' };
   }
 
-  console.log("✅ Comment succesvol verwijderd");
-  return { message: 'Comment succesvol verwijderd' };
+  console.log("✅ Comment successfully deleted");
+  return { message: 'Comment successfully deleted' };
 }
 
 export async function editCommentAction(
   commentDocumentId: string,
   newMessage: string
 ) {
-  console.log("✏️ editCommentAction gestart met documentId:", commentDocumentId);
+  console.log("✏️ editCommentAction started with documentId:", commentDocumentId);
 
   const jwt = (await cookies()).get('jwt')?.value;
-  if (!jwt) return { message: 'Niet ingelogd' };
+  if (!jwt) return { message: 'Not logged in' };
 
   const currentUser = await getCurrentUser();
-  console.log("👤 Huidige gebruiker:", currentUser);
-  if (!currentUser) return { message: 'Kon gebruiker niet ophalen' };
+  console.log("👤 Current user:", currentUser);
+  if (!currentUser) return { message: 'Could not retrieve user' };
 
-  // ✅ Zelfde GraphQL query om comment + eigenaar op te halen
+ 
   const query = `
     query GetComment($docId: ID!) {
       comments(filters: { documentId: { eq: $docId } }) {
@@ -178,26 +178,26 @@ export async function editCommentAction(
   `;
 
   const variables = { docId: commentDocumentId };
-  console.log("📦 Variabelen voor GraphQL:", variables);
+  console.log("📦 Variables for GraphQL:", variables);
 
   const data = await requestGraphQL(query, variables, jwt);
   console.log("📥 GraphQL response:", data);
 
   const comment = data?.comments?.[0];
   if (!comment) {
-    return { message: 'Comment niet gevonden' };
+    return { message: 'Comment not found' };
   }
 
-  // 🔒 Check eigenaar
+ 
   if (comment.users_permissions_user?.documentId !== currentUser.documentId) {
-    return { message: 'Geen toestemming om deze reactie te bewerken' };
+    return { message: 'No permission to edit this comment' };
   }
 
-  // ✏️ PATCH uitvoeren
+
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/comments/${commentDocumentId}`,
     {
-      method: 'PUT', // of 'PUT' afhankelijk van je Strapi config
+      method: 'PUT', 
       headers: {
         Authorization: `Bearer ${jwt}`,
         'Content-Type': 'application/json',
@@ -212,11 +212,11 @@ export async function editCommentAction(
 
   if (!res.ok) {
     const errText = await res.text();
-    console.error("❌ PATCH mislukt:", errText);
-    return { message: 'Fout bij bewerken van reactie' };
+    console.error("❌ PATCH failed:", errText);
+    return { message: 'Error editing comment' };
   }
 
   const updated = await res.json();
-  console.log("✅ Comment succesvol bewerkt:", updated);
-  return { message: 'Comment succesvol bewerkt', comment: updated };
+  console.log("✅ Comment successfully edited:", updated);
+  return { message: 'Comment successfully edited', comment: updated };
 }

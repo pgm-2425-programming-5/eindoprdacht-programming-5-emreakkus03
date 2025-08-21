@@ -10,10 +10,10 @@ export default async function ProfilePage() {
   const jwt = cookieStore.get('jwt')?.value;
 
   if (!jwt) {
-    redirect('/login'); // geen token? Terug naar login
+    redirect('/login'); 
   }
 
-  // Vraag user info op via Strapi
+  
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me`, {
     headers: {
       Authorization: `Bearer ${jwt}`,
@@ -22,14 +22,14 @@ export default async function ProfilePage() {
   });
 
   if (!res.ok) {
-    redirect('/login'); // ongeldige token
+    redirect('/signin'); 
   }
 
   const user = await res.json();
 
   return (
     <main className="max-w-md mx-auto py-10 px-4">
-      <h1 className="text-2xl font-bold mb-6">Profiel</h1>
+      <h1 className="text-2xl font-bold mb-6">Profile</h1>
       <ProfileForm user={{ id: user.id, username: user.username, email: user.email }} />
     </main>
   );

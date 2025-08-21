@@ -1,4 +1,3 @@
-// ✅ FIXED versie van PostItem.tsx
 "use client";
 import CommentForm from '@/components/forms/comment-form';
 import React from 'react';
@@ -6,10 +5,8 @@ import { Post } from '@/types/Post';
 import { format } from 'date-fns';
 import CommentItem from './CommentItem';
 import { useRouter } from 'next/navigation';
-
-import Link from 'next/link';
 import PostButton from './PostButton';
-import { RichText } from '@graphcms/rich-text-react-renderer';
+
 
 interface PostItemProps {
   post: Post;
@@ -25,38 +22,47 @@ export default function PostsItem({ post, deletePost, editPost }: PostItemProps)
   };
 
   return (
-    <li className="p-6 border rounded-lg shadow-md bg-gray-200 mb-4">
-        <Link href={`/posts/${post.documentId}`} className="block hover:underline">
-        <div className="flex items-center mb-4">
-          {post.image?.url && (
-            <img
-              src={`${process.env.NEXT_PUBLIC_API_URL}${post.image.url}`}
-            alt={post.image.alternativeText || 'Post image'}
-            className="w-10 h-10 rounded-full mr-4"
-          />
-        )}
-        <div>
-          <h2 className="text-lg font-semibold">{post.user?.username || 'Onbekend'}</h2>
-          <p className="text-sm text-gray-500">{format(new Date(post.dateAdded), 'dd-MM-yyyy')}</p>
-        </div>
-      </div>
-</Link>
-      <p className="text-gray-700 mb-4">{post.title}</p>
-      <p className="text-gray-700 mb-4">{post.description}</p>
-      <p className="text-gray-700 mb-4">{post.ingredients}</p>
-      <p className="text-gray-700 mb-4">{post.steps}</p>
+    <li className="p-6 border rounded-lg shadow-md bg-gray-200 mb-6">
       
-
-      <p className="text-sm text-gray-600">
-        🕒 {post.totalTime} min | 🧑‍🍳 {post.difficulty} | {post.servings}
-      </p>
-      {post.category?.title && (
-        <p className="text-sm text-gray-500">Categorie: {post.category.title}</p>
+      
+      {post.image?.url && (
+        <div className="w-full flex justify-center mb-4">
+          <img
+            src={`${process.env.NEXT_PUBLIC_API_URL}${post.image.url}`}
+            alt={post.image.alternativeText || 'Post image'}
+            className="w-full max-w-3xl rounded-2xl shadow-lg object-cover"
+          />
+        </div>
       )}
 
-      <p className="text-gray-500 mb-4">{post.amountLikes} 👍</p>
+      
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
+        <div className="flex justify-center items-center space-x-2 text-sm text-gray-600">
+          <span>{format(new Date(post.dateAdded), 'dd-MM-yyyy')}</span>
+          <span>•</span>
+          <span>{post.user?.username || 'Undefined'}</span>
+        </div>
+      </div>
 
-      <div className="flex space-x-4 mb-4">
+     <div className="text-center max-w-2xl mx-auto">
+  <p className="text-gray-700 mb-4">{post.description}</p>
+  <p className="text-gray-700 mb-4">{post.ingredients}</p>
+  <p className="text-gray-700 mb-4">{post.steps}</p>
+
+  <p className="text-sm text-gray-600 mb-2">
+    🕒 {post.totalTime} min | 🧑‍🍳 {post.difficulty} | {post.servings} servings | 👍 {post.amountLikes}
+  </p>
+
+  {post.category?.title && (
+    <p className="text-sm font-semibold mb-4">
+      Category: {post.category.title}
+    </p>
+  )}
+</div>
+
+      
+      <div className="flex space-x-4 mb-6">
         {editPost && (
           <PostButton color="blue" onClick={editPost} postId={post.id}>
             Update
@@ -68,14 +74,15 @@ export default function PostsItem({ post, deletePost, editPost }: PostItemProps)
           </PostButton>
         )}
       </div>
- 
+
+      
       <details className="mt-4">
         <summary className="text-xl font-semibold cursor-pointer">Comments</summary>
         <CommentForm documentId={post.documentId} onSubmitted={handleRefresh} />
         <ul className="space-y-2 mt-2">
           {(post.comments || []).map((comment, index) => (
             <CommentItem
-              key={comment.documentId + '-' + index} // fix voor dubbele keys
+              key={comment.documentId + '-' + index}
               comment={comment}
               documentId={post.documentId}
               depth={0}
@@ -86,7 +93,5 @@ export default function PostsItem({ post, deletePost, editPost }: PostItemProps)
         </ul>
       </details>
     </li>
-   
-
   );
 }

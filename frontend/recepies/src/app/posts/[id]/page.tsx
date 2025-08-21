@@ -1,8 +1,7 @@
 import { Post } from '@/types/Post';
 import PostItem from '../components/PostItem';
 import { gql, request } from 'graphql-request';
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
+
 
 const STRAPI_GRAPHQL_URL = process.env.STRAPI_GRAPHQL_URL || 'http://localhost:1337/graphql';
 
@@ -53,7 +52,7 @@ async function fetchPost(id: string): Promise<Post> {
   return response.post;
 }
 
-// ✅ GEFIXT: eerst destructureren binnen de functie
+
 export default async function PostPage({ params }: { params: { id: string } }) {
   const post = await fetchPost(params.id);
 

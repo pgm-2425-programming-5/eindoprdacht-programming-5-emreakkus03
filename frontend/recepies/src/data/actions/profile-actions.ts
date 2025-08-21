@@ -10,7 +10,7 @@ export async function changeProfileAction(_: any, formData: FormData) {
   const userId = formData.get('id');
 
   if (password && password !== passwordConfirm) {
-    return { message: 'Wachtwoorden komen niet overeen' };
+    return { message: 'Passwords do not match' };
   }
 
   const cookieStore = await cookies();
@@ -21,7 +21,7 @@ export async function changeProfileAction(_: any, formData: FormData) {
     email,
   };
 
-  // Alleen password meesturen als ingevuld
+  
   if (password) {
     body.password = password;
   }
@@ -36,9 +36,8 @@ export async function changeProfileAction(_: any, formData: FormData) {
   });
 
   if (!res.ok) {
-    // Optioneel: lees error body om specifieke fout te tonen
-    return { message: 'Fout bij updaten' };
+    return { message: 'Error updating profile' };
   }
 
-  return { message: 'Profiel succesvol gewijzigd' };
+  return { message: 'Profile successfully updated' };
 }

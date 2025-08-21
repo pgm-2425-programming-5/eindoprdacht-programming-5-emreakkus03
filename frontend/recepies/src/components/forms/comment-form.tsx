@@ -58,36 +58,36 @@ export default function CommentForm({
         router.refresh();
       }
     } else {
-      setError(result.message || 'Er ging iets mis.');
+      setError(result.message || 'Something went wrong.');
     }
 
     setIsSending(false);
   }
 
-  // ✅ Als nog niet bekend of user ingelogd is → niks tonen
+  
   if (isLoggedIn === null) {
     return null;
   }
 
-  // ✅ Niet ingelogd → melding + geen formulier
+  
   if (!isLoggedIn) {
     return (
       <div className="mt-4 p-4 border rounded bg-gray-50">
         <p className="text-red-500 font-medium mb-2">
-          Je moet eerst inloggen om een reactie te plaatsen
+          You must be logged in to post a comment
         </p>
-        {/* eventueel login-knop */}
+        
         <button
           onClick={() => router.push('/signin')}
           className="bg-blue-600 text-white px-4 py-1 rounded"
         >
-          Inloggen
+          Login
         </button>
       </div>
     );
   }
 
-  // ✅ Wel ingelogd → formulier tonen
+  
   return (
     <form onSubmit={handleSubmit} className="mt-4 space-y-2">
       {error && <p className="text-red-500">{error}</p>}
@@ -96,7 +96,7 @@ export default function CommentForm({
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         className="w-full p-2 border rounded"
-        placeholder="Schrijf een reactie..."
+        placeholder="Place a comment..."
         required
       />
 
@@ -105,7 +105,7 @@ export default function CommentForm({
         disabled={isSending}
         className="bg-blue-600 text-white px-4 py-1 rounded"
       >
-        {isSending ? 'Versturen…' : 'Verstuur'}
+        {isSending ? 'Sending...' : 'Send'}
       </button>
     </form>
   );

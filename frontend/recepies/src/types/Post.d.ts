@@ -13,7 +13,7 @@ export type Comment = {
     username: string;
     documentId: string;
   };
-  comments?: Comment[]; // replies op deze comment
+  comments?: Comment[]; 
   children?: Comment[];
 };
 
@@ -40,12 +40,12 @@ export type Post = {
     amountLikes: number;
     user: string;
     comments: Comment[];
-    author: {   // <-- Vervang 'users_permissions_user' door 'author'
+    author: {
       documentId: string;
       username: string;
     };
     user?: {
       documentId: string;
-      // other user fields...
+  
     };
 };

@@ -7,7 +7,7 @@ export async function fetchCurrentUserClient() {
 }
 
 export async function callDeleteComment(commentId: string): Promise<{ message: string; success: boolean }> {
-  console.log("Verwijder comment met ID:", commentId);
+  console.log("Delete comment with ID:", commentId);
   try {
     await deleteCommentAction(commentId);
     return { message: "Comment deleted successfully.", success: true };
