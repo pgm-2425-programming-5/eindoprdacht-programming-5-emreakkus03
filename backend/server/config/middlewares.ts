@@ -8,7 +8,7 @@ export default [
         useDefaults: true,
         directives: {
           'default-src': ["'self'"],
-          'connect-src': ["'self'", 'https://eindoprdacht-programming-5-emreakku.vercel.app/'],
+          'connect-src': ["'self'", 'https://eindoprdacht-programming-5-emreakku.vercel.app'],
         },
       },
     },
@@ -16,7 +16,7 @@ export default [
   {
     name: 'strapi::cors',
     config: {
-      origin: ['https://<YOUR_FRONTEND_DOMAIN>'], 
+      origin: ['https://eindoprdacht-programming-5-emreakku.vercel.app'], 
       credentials: true, 
     },
   },
@@ -29,7 +29,7 @@ export default [
       cookie: {
         httpOnly: true,
         secure: true,      
-        sameSite: 'None',  
+        sameSite: 'None',   
       },
     },
   },

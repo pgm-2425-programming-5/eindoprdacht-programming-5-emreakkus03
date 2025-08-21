@@ -15,18 +15,19 @@ export async function registerUserService(userData: RegisterUserProps) {
   const url = new URL("/api/auth/local/register", baseUrl);
 
   try {
-    const response = await fetch(url, {
+    const response = await fetch(url.toString(), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ ...userData }),
+      body: JSON.stringify(userData),
       credentials: "include", 
     });
 
     return response.json();
   } catch (error) {
     console.error("Registration Service Error:", error);
+    return { error };
   }
 }
 
@@ -34,18 +35,18 @@ export async function loginUserService(userData: LoginUserProps) {
   const url = new URL("/api/auth/local", baseUrl);
 
   try {
-    const response = await fetch(url, {
+    const response = await fetch(url.toString(), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ ...userData }),
+      body: JSON.stringify(userData),
       credentials: "include", 
     });
 
     return response.json();
   } catch (error) {
     console.error("Login Service Error:", error);
-    throw error;
+    return { error };
   }
 }
