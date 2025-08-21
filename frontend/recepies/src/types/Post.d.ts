@@ -20,32 +20,26 @@ export type Comment = {
 export type Post = {
     id: number;
     documentId: string;
-     image: {
-    url: string;
-    alternativeText?: string; 
-  };
-  description: string;
-  ingredients: string;
-  steps: string;
-  category: {
-    documentId: string | number | readonly string[] | undefined;
-    title: string;
-  };
+    image?: {
+        url: string;
+        alternativeText?: string; 
+    };
+    description: string;
+    ingredients: string;
+    steps: string;
+    category?: {
+        documentId: string | number | readonly string[] | undefined;
+        title: string;
+    };
     difficulty: string;
     totalTime: number;
     servings: number;
     dateAdded: string;
-    user: string;
     title: string;
     amountLikes: number;
-    user: string;
-    comments: Comment[];
-    author: {
-      documentId: string;
-      username: string;
-    };
-    user?: {
-      documentId: string;
-  
+    comments?: Comment[];
+    user?: {                 
+        documentId: string;
+        username: string;
     };
 };

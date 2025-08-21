@@ -56,37 +56,37 @@ async function fetchPosts(
   return response.posts;
 }
 
+
 export const fetchCache = 'force-no-store';
 
 type Props = {
-  searchParams?: { search?: string; sort?: string; category?: string };
+  searchParams?: Promise<{ search?: string; sort?: string; category?: string }>;
 };
 
 export default async function PostsPage({ searchParams }: Props) {
-  
-
-  const search = searchParams?.search || "";
-  const sort = (searchParams?.sort === "asc" || searchParams?.sort === "desc" ? searchParams.sort : "asc") as 'asc' | 'desc';
-  const category = searchParams?.category || "";
+  // Next.js 15 verwacht searchParams als Promise
+  const params = (await searchParams) || {};
+  const search = params.search || "";
+  const sort = (params.sort === "asc" || params.sort === "desc" ? params.sort : "asc") as 'asc' | 'desc';
+  const category = params.category || "";
 
   const jwt = (await cookies()).get('jwt')?.value || "";
   const posts = await fetchPosts(jwt, search, sort, category);
 
   return (
     <div className="container mx-auto p-4">
-       <div className="flex justify-between items-center mb-4">
-      <h1 className="text-3xl font-bold">Recipes</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-3xl font-bold">Recipes</h1>
 
-      
-      {jwt && (
-        <Link
-          href="/posts/create"
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Create Recipe
-        </Link>
-      )}
-    </div>
+        {jwt && (
+          <Link
+            href="/posts/create"
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Create Recipe
+          </Link>
+        )}
+      </div>
       <SearchSortForm initialSearch={search} initialSort={sort} initialCategory={category} />
       <PostsListClient posts={posts} />
     </div>
