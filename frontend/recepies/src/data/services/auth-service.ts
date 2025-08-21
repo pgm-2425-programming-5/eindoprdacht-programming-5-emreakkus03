@@ -21,6 +21,7 @@ export async function registerUserService(userData: RegisterUserProps) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ ...userData }),
+      credentials: "include", 
     });
 
     return response.json();
@@ -39,6 +40,7 @@ export async function loginUserService(userData: LoginUserProps) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ ...userData }),
+      credentials: "include", 
     });
 
     return response.json();
